@@ -2,9 +2,11 @@ package conta_bancaria;
 
 import java.io.IOException;
 import java.util.InputMismatchException;
+import java.util.Optional;
 import java.util.Scanner;
 
 import conta_bancaria.controller.ContaController;
+import conta_bancaria.model.Conta;
 import conta_bancaria.model.ContaCorrente;
 import conta_bancaria.model.ContaPoupanca;
 import conta_bancaria.util.Cores;
@@ -17,9 +19,9 @@ public class Menu {
 
 		ContaController contas = new ContaController();
 
-		int opcao, numero, agencia, tipo, aniversario;
+		int opcao, numero, numeroDestino, agencia, tipo = 3, aniversario;
 		String titular;
-		float saldo, limite;
+		float saldo, limite, valor;
 
 		/* Objetos da Classe Conta para testes */
 
@@ -76,10 +78,14 @@ public class Menu {
 				System.out.println("Digite o nome do Titular: ");
 				leia.skip("\\R");
 				titular = leia.nextLine();
-
+				
 				System.out.println("Digite o tipo da Conta (1 - CC ou 2 - CP): ");
+				while(tipo != 1 && tipo != 2){
 				tipo = leia.nextInt();
-
+				if(tipo != 1 && tipo != 2)
+					System.out.println("Tipo Invalido !! Digite o tipo da Conta *(1 - CC ou 2 - CP):* ");
+				}
+				
 				System.out.println("Digite o Saldo da conta: ");
 				saldo = leia.nextFloat();
 
@@ -118,6 +124,41 @@ public class Menu {
 			case 4:
 				System.out.println(Cores.TEXT_WHITE + "Atualizar Dados da Conta\n\n");
 
+				System.out.println("Digite o numero da Conta: ");
+				numero = leia.nextInt();	
+				
+				Optional<Conta> conta = contas.buscarNaCollection(numero);
+				
+				if(conta.isPresent()) {
+					
+					System.out.println("Digite o número da Agência: ");
+					agencia = leia.nextInt();
+
+					System.out.println("Digite o nome do Titular: ");
+					leia.skip("\\R");
+					titular = leia.nextLine();
+
+					tipo = conta.get().getTipo();
+
+					System.out.println("Digite o Saldo da conta: ");
+					saldo = leia.nextFloat();
+					
+					switch (tipo) {
+						case 1 -> {
+							System.out.println("Digite o limite da conta: ");
+							limite = leia.nextFloat();
+							contas.atualizar(new ContaCorrente(numero, agencia, tipo, titular, saldo, limite));
+					}
+						case 2 -> {
+							System.out.println("Digite o dia do aniversário da conta: ");
+							aniversario = leia.nextInt();
+							contas.atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo, aniversario));
+					}
+						
+					}	
+				}else {
+					System.out.println("A Conta numero: " + numero + " Nao foi encontrada!");
+				}
 				keyPress();
 				break;
 			case 5:
@@ -132,16 +173,47 @@ public class Menu {
 				break;
 			case 6:
 				System.out.println(Cores.TEXT_WHITE + "Saque\n\n");
-
+				
+				System.out.println("Digite o número da conta: ");
+				numero = leia.nextInt();
+				
+				System.out.println("Digite o valor do Saque: ");
+				valor = leia.nextFloat();
+				
+				contas.sacar(numero,valor);
 				keyPress();
 				break;
 			case 7:
 				System.out.println(Cores.TEXT_WHITE + "Depositar\n\n");
 
+				System.out.println("Digite o número da conta: ");
+				numero = leia.nextInt();
+				
+				System.out.println("Digite o valor do Deposito: ");
+				valor = leia.nextFloat();
+				
+				contas.depositar(numero,valor);
+				
 				keyPress();
 				break;
 			case 8:
 				System.out.println(Cores.TEXT_WHITE + "Transferencia entre Contas\n\n");
+				
+				System.out.println("Digite o número da Conta de Origem: ");
+				numero = leia.nextInt();
+				
+				System.out.println("Digite o número da Conta de Destino: ");
+				numeroDestino = leia.nextInt();
+				
+				if(numero != numeroDestino) {
+				
+					System.out.println("Digite o valor da Transferencia: ");
+					valor = leia.nextFloat();
+					
+					contas.transferir(numero, numeroDestino, valor);
+					
+				}else
+					System.out.println("O numero das Contas são iguais!");
 
 				keyPress();
 				break;
