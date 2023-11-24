@@ -20,7 +20,7 @@ public class ContaPoupanca extends Conta {
 	@Override
 	public void visualizar() {
 		super.visualizar();
-		System.out.println("Aniversario da conta: " + this.aniversario);
+		System.out.println("Limite da conta: " + this.getAniversario());
 	}
 	
 }
