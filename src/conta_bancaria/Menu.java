@@ -46,7 +46,8 @@ public class Menu {
 					+ "|             6 - Sacar                               |\n"
 					+ "|             7 - Depositar                           |\n"
 					+ "|             8 - Transferir valores entre Contas     |\n"
-					+ "|             9 - Sair                                |\n"
+					+ "|             9 - Consulta por Titular                |\n"
+					+ "|             10 - Sair                               |\n"
 					+ "|                                                     |\n"
 					+ "*******************************************************");
 
@@ -62,7 +63,7 @@ public class Menu {
 
 			System.out.println("\n");
 
-			if (opcao == 9) {
+			if (opcao == 10) {
 				System.out.println(Cores.TEXT_WHITE_BOLD + "Programa finalizado!");
 				sobre();
 				leia.close();
@@ -74,14 +75,16 @@ public class Menu {
 
 				System.out.println("Digite o número da Agência: ");
 				agencia = leia.nextInt();
+				leia.nextLine();
 
 				System.out.println("Digite o nome do Titular: ");
-				leia.skip("\\R");
 				titular = leia.nextLine();
 				
 				System.out.println("Digite o tipo da Conta (1 - CC ou 2 - CP): ");
-				while(tipo != 1 && tipo != 2){
 				tipo = leia.nextInt();
+				leia.nextLine();
+				
+				while(tipo != 1 && tipo != 2){
 				if(tipo != 1 && tipo != 2)
 					System.out.println("Tipo Invalido !! Digite o tipo da Conta *(1 - CC ou 2 - CP):* ");
 				}
@@ -133,9 +136,9 @@ public class Menu {
 					
 					System.out.println("Digite o número da Agência: ");
 					agencia = leia.nextInt();
+					leia.nextLine();
 
 					System.out.println("Digite o nome do Titular: ");
-					leia.skip("\\R");
 					titular = leia.nextLine();
 
 					tipo = conta.get().getTipo();
@@ -207,17 +210,28 @@ public class Menu {
 				
 				if(numero != numeroDestino) {
 				
-					System.out.println("Digite o valor da Transferencia: ");
+					System.out.println(Cores.TEXT_WHITE +"Digite o valor da Transferencia: ");
 					valor = leia.nextFloat();
 					
 					contas.transferir(numero, numeroDestino, valor);
 					
 				}else
-					System.out.println("O numero das Contas são iguais!");
+					System.out.println(Cores.TEXT_WHITE +"O numero das Contas são iguais!");
 
 				keyPress();
 				break;
+				
+			case 9:
+				System.out.println(Cores.TEXT_WHITE +"Consultar Contas por Titular\n\n");
+				
+				System.out.println("Digite o nome do Titular: ");
+				leia.skip("\\R");
+				titular = leia.nextLine();
+				
+				contas.procurarPorNome(titular);
 
+				keyPress();
+				break;
 			default:
 				System.err.println(Cores.TEXT_WHITE + "Opção Invalida!" + Cores.TEXT_RESET);
 				
